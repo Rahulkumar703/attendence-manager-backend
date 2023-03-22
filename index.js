@@ -1,23 +1,37 @@
-const express = require('express');
-const { config } = require('dotenv')
-const userRoutes = require('./Routes/Students');
-const facultyRoutes = require('./Routes/Faculty');
-var cors = require('cors')
+import express, { json } from 'express';
+import { config } from 'dotenv';
+import { set, connect } from 'mongoose';
+import cors from 'cors';
+import studentRoutes from './Routes/studentRoutes.js';
+import bodyParser from 'body-parser';
 config();
 const app = express();
 
 // middleware
 app.use(express.json())
 app.use(cors());
-const PORT = process.env.PORT;
-console.log();
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/student', userRoutes);
-app.use('/faculty', facultyRoutes);
-
-
-
-
-app.listen(PORT, () => {
-    console.log(`Server Started at http://localhost:${PORT}`);
+app.use((req, res, next) => {
+    console.log(req.path, req.method);
+    next();
 })
+
+// Routes
+app.use('/api/v1', studentRoutes)
+
+
+// MongoDB Connection
+const PORT = process.env.PORT;
+set('strictQuery', true);
+connect(process.env.MONGO_URI)
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server Started at http://localhost:${PORT}/api/v1`);
+        })
+    })
+    .catch(e => {
+        console.log(e);
+    })
+
