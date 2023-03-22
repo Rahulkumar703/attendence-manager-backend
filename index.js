@@ -19,7 +19,15 @@ app.use((req, res, next) => {
 })
 
 // Routes
+app.get('/', (req, res) => {
+    res.json({ status: 200, message: 'welcome to attendence system API' })
+})
+
 app.use('/api/v1', studentRoutes)
+
+app.get('*', (req, res) => {
+    res.json({ status: 404, message: 'Sorry! this route not found' })
+})
 
 
 // MongoDB Connection

@@ -8,8 +8,13 @@ const studentRoutes = Router();
 
 // Fetch Students
 studentRoutes.get('/students', async (req, res) => {
-    const response = await StudentModel.find({}, { password: 0 })
-    res.status(200).json(response);
+    try {
+        const response = await Student.find({}, { password: 0 })
+        res.json(response);
+    } catch (e) {
+        console.log(e);
+        res.json({ ...e, type: 'error', message: 'Opps! Somthing went wrong. ' })
+    }
 })
 
 
