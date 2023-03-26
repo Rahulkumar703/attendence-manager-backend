@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Student from '../Models/Students.js';
+import { addStudent, getStudent, getStudents } from '../Controllers/studentsController.js';
 
 
 const studentRoutes = Router();
@@ -7,31 +7,15 @@ const studentRoutes = Router();
 
 
 // Fetch Students
-studentRoutes.get('/students', async (req, res) => {
-    try {
-        const response = await Student.find({}, { password: 0 })
-        res.json(response);
-    } catch (e) {
-        console.log(e);
-        res.json({ ...e, type: 'error', message: 'Opps! Somthing went wrong. ' })
-    }
-})
+studentRoutes.get('/students', getStudents)
 
 
-// Add Students
-studentRoutes.post('/student', async (req, res) => {
-    const { student } = req.body;
+// Fetch Student
+studentRoutes.get('/student/:_id', getStudent)
 
-    try {
-        const newStudent = await Student.insertMany(student, { password: 0 });
-        res.json(newStudent);
-    }
-    catch (e) {
-        console.log(e);
-        res.json({ type: 'error', message: e.code === 11000 ? 'Student already exist' : 'Opps ! Somthing went wrog' })
-    }
 
-})
+// Add Student
+studentRoutes.post('/student', addStudent);
 
 
 
