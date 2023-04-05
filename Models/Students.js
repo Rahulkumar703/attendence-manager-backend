@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import validator from 'validator'
 
 
 const AttendenceSchema = mongoose.Schema({
@@ -14,8 +13,8 @@ const AttendenceSchema = mongoose.Schema({
 });
 
 const ClassesSchema = mongoose.Schema({
-    faculty: {
-        type: String,
+    facultyId: {
+        type: mongoose.ObjectId,
         trim: true,
         required: 'Please enter your name'
     },
@@ -32,30 +31,35 @@ const StudentSchema = mongoose.Schema(
     {
         name: {
             type: String,
-            required: 'Please enter your name',
-            trim: true
+            required: [true, 'Please enter your name'],
+            trim: true,
+            lowercase: true,
         },
         email: {
             type: String,
-            required: 'Please provide a email to continue',
             trim: true,
             lowercase: true,
-            validate: [(value) => validator.isEmail(value), 'Please enter a valid email']
+        },
+        phone: {
+            type: Number,
+            trim: true,
         },
         password: {
             type: String,
-            required: 'Please set a password to continue',
             select: false,
-            minlength: [6, 'Password minimum length should be 6 character']
+        },
+        isLE: {
+            type: Boolean,
+            default: false
         },
         batch: {
             type: Number,
-            required: 'Please enter your batch',
+            required: [true, 'Please enter your batch'],
             trim: true
         },
         branch: {
             type: String,
-            required: 'Please enter your Branch',
+            required: [true, 'Please enter your Branch'],
             trim: true,
             lowercase: true
         },

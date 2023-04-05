@@ -2,8 +2,9 @@ import express, { json } from 'express';
 import { config } from 'dotenv';
 import { set, connect } from 'mongoose';
 import cors from 'cors';
-import studentRoutes from './Routes/studentRoutes.js';
 import bodyParser from 'body-parser';
+import studentRoutes from './Routes/studentRoutes.js';
+import facultyRoutes from './Routes/facultiesRoutes.js';
 config();
 const app = express();
 
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/v1', studentRoutes)
+app.use('/api/v1', facultyRoutes)
 
 app.get('*', (req, res) => {
     res.json({ status: 404, message: 'Sorry! this route not found' })
@@ -40,6 +42,11 @@ connect(process.env.MONGO_URI)
         })
     })
     .catch(e => {
-        console.log(e);
+        if (e.code === 'ECONNREFUSED') {
+            console.log({ message: 'Connection to Database failed, Please Check Your Network Connection.', error: e })
+        }
+        else {
+            console.log({ message: 'Opps! Somthing went Wrong, Connection to Database failed.', error: e })
+        }
     })
 

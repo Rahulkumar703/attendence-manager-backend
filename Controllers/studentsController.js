@@ -29,10 +29,18 @@ const handelError = (e) => {
 // ================ Fetching Students ================ //
 
 const getStudents = async (req, res) => {
+    const { branch, batch } = req.query;
     try {
-        const response = await Student.find({}, { password: 0 })
-        res.status(200).json(response);
-    } catch (e) {
+        if (branch && batch) {
+            const response = await Student.find({ branch, batch })
+            res.status(200).json(response);
+        }
+        else {
+            const response = await Student.find()
+            res.status(200).json(response);
+        }
+    }
+    catch (e) {
         const error = handelError(e);
         res.status(400).json(error)
     }
@@ -69,11 +77,11 @@ const getStudent = async (req, res) => {
 // ================ Add Student ================ //
 
 const addStudent = async (req, res) => {
-    const { name, branch, batch, rollno, email, password } = req.body;
+    const { name, branch, batch, rollno, isLE } = req.body;
 
 
     try {
-        const newStudent = await Student.create({ name, branch, batch, rollno, email, password });
+        const newStudent = await Student.create({ name, branch, batch, rollno, isLE });
         res.status(200).json(newStudent);
     }
     catch (e) {
